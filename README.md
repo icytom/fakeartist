@@ -34,3 +34,4 @@ TODO
 - [ ] timer and rounds
 - [ ] end game
 - [ ] scores
+- [ ] add graphics
