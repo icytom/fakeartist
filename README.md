@@ -24,3 +24,13 @@ If they don't know what is being drawn everyone else gets points.
 
 i.e. you need to make sure all the real artists know that you know what is being drawn without revealing to the fake artist.
 
+TODO
+
+- [ ] each player is a different colour and lines are thicker
+- [ ] start screen where players enter name and click when ready
+- [ ] create room when everyone is ready
+- [ ] random word list + acceptable answers
+- [ ] put names next to colours
+- [ ] timer and rounds
+- [ ] end game
+- [ ] scores
