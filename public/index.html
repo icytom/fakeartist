@@ -6,16 +6,27 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  
+  <div id="startgame" class="modal">
+    <form id="form" action="">
+      <label><span>Fake</span> Artist</label>
+      <input id="n" autocomplete="off" placeholder="Enter your name" />
+      <button id="readyToPlay">I'm ready to play</button>
+    </form>
+  </div>
+
+  <div id="waitingToStart" class="modal">
+    <form id="form" action="">
+      <label><span>Fake</span> Artist</label>
+      <p>players in room</p>
+      <ul>
+      </ul>
+      <button id="startGame">Start Game</button>
+    </form>
+  
+  </div>
 
   <canvas class="whiteboard" ></canvas>
-
-  <div class="colors">
-    <div class="color black"></div>
-    <div class="color red"></div>
-    <div class="color green"></div>
-    <div class="color blue"></div>
-    <div class="color yellow"></div>
-  </div>
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="/main.js"></script>
