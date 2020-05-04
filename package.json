@@ -1,0 +1,12 @@
+{
+    "name": "fakeartist",
+    "version": "0.0.1",
+    "description":"An online version of fake artist",
+    "main":"index.js",
+    "dependencies": {},
+    "scripts":{
+        "start": "node index"
+    },
+    "author": "Tom Garne",
+    "license": "MIT"
+}
