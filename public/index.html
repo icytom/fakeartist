@@ -8,22 +8,22 @@
 <body>
   
   <div id="startgame" class="modal">
-    <form id="form" action="">
+    <form id="joinForm" action="">
       <label><span>Fake</span> Artist</label>
       <input id="n" autocomplete="off" placeholder="Enter your name" />
-      <button id="readyToPlay">I'm ready to play</button>
+      <button id="btnJoinRoom">I'm ready to start</button>
     </form>
   </div>
 
   <div id="waitingToStart" class="modal">
-    <form id="form" action="">
+    <form id="playForm" action="">
       <label><span>Fake</span> Artist</label>
-      <p>players in room</p>
-      <ul>
+      <p>Artists in the studio:</p>
+      <ul id="playerList">
       </ul>
-      <button id="startGame">Start Game</button>
+      <button id="btnStart">Start Painting</button>
+      <p id="pwaiting">Waiting for more Artists</p>
     </form>
-  
   </div>
 
   <canvas class="whiteboard" ></canvas>

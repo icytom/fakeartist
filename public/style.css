@@ -27,27 +27,12 @@
     top: 0;
   }
   
-  .colors {
-    position: fixed;
-  }
-  
-  .color {
-    display: inline-block;
-    height: 48px;
-    width: 48px;
-  }
-  
-  .color.black { background-color: black; }
-  .color.red { background-color: red; }
-  .color.green { background-color: green; }
-  .color.blue { background-color: blue; }
-  .color.yellow { background-color: yellow; }
 
 
   .modal  {
     border:solid black 1px;
     border-radius: 5px;
-    background-color: darkslategrey;
+    background-color: white;
     width: 50%;
     position: absolute;
     left: 50%;
@@ -63,14 +48,14 @@
     font-size: 2em;
     text-align: center;
     width: 100%;
-    color: white;
+    color:darkred;
     display: inline-block;
     margin-bottom: 10px;
     font-family: arial;
-
 }
+
 .modal label span{
- font-weight: 1000;
+    font-weight: 1000;
 }
 
 .modal input{
@@ -101,6 +86,33 @@
   
   .modal p{
     margin: 10px 0 0 0;
-  color: white;
+  color: black;
   font-size: 1.5em;
+  text-align: center;
+  }
+
+  #waitingToStart{
+    display: none;
+  }
+
+  .modal ul{
+    list-style: none;
+    padding: 0 0 0 20px;
+    color: white;
+    font-size: 1.5em;
+    margin-top: 0.5em;
+  }
+
+  .modal ul li{
+    padding: 5px 0;
+    font-weight: bold;;
+  }
+  
+  #btnStart{
+    display:none;
+  }
+
+  #pwaiting{
+    padding: 10px;
+    border: solid 1px white;
   }

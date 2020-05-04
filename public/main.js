@@ -2,60 +2,147 @@
 
 (function () {
 
-    let socket = io();
+    let socket;
     let canvas = document.getElementsByClassName('whiteboard')[0];
     let context = canvas.getContext('2d');
 
     const states = {
         "START_MENU": "startmenu",
+        "WAITING_FOR_PLAYER": "waiting",
         "GAME": "game"
     }
 
     let state = states.START_MENU;
 
-    let current = {
-        color: 'black'
-    };
+    let myColour = "black";
 
     let drawing = false;
 
+    let current = {};
+
     //find ready to play button and listen for click
-    let playForm = document.getElementById('form');
-    playForm.addEventListener('submit', playerReady);
+    let joinForm = document.getElementById('joinForm');
+    joinForm.addEventListener('submit', playerReady);
 
     function playerReady(e){
         e.preventDefault(); //stop page refresh
         //get value of input box
         let playerName = document.getElementById("n").value;
+
+        //do nothing if no name entered
+        if(playerName == ""){
+            return;
+        }
         
-        //add player to room?
+        state = states.WAITING_FOR_PLAYER;
+
+        //add player to server
+        socket = io({
+            query: {
+              userName: playerName
+            }
+          });
+
+        //hide ready to play screen
+        document.getElementById("startgame").style.display = "none";
+        joinForm.removeEventListener('submit',playerReady);
 
         //show waiting box
+        document.getElementById("waitingToStart").style.display = "block";
+
+        //listen for players enterning or leaving the room
+        socket.on('roomClients', onPlayerRoomEvent);
+          
+        socket.on('startPainting', onStartPainting);
+
+    }
+
+    
+    function onPlayerRoomEvent(data){
         
- 
+        //add to list if just entered
+        if(data.players){
+            let list = document.getElementById("playerList");
+            list.innerHTML = '';
+
+            for(let i in data.players){
+                let item = document.createElement("li");
+                item.innerHTML = data.players[i].clientName;
+                item.style.color = data.players[i].colour;
+                list.appendChild(item);
+
+                if(data.players[i].id == socket.id){
+                    myColour = data.players[i].colour;
+                }
+            }
+
+            if(data.players.length >= 3){
+                document.getElementById("pwaiting").style.display = "none";
+                document.getElementById("btnStart").style.display = "block";
+                document.getElementById("btnStart").disabled = false;
+
+                let playForm = document.getElementById('playForm');
+                playForm.addEventListener('submit', startGame);
+                //show waiting box
+               
+            }else{
+                document.getElementById("pwaiting").style.display = "block";
+                document.getElementById("btnStart").style.display = "none";
+                document.getElementById("btnStart").disabled = true;
+
+                let playForm = document.getElementById('playForm');
+                playForm.removeEventListener('submit', startGame);
+            }
+
+       
+        }
+
+    }
+
+    function startGame(e){
+        e.preventDefault(); //stop page refresh
+
+
+        socket.emit('startPainting');
+    }
+
+
+    function onStartPainting(data){
+
+        state = states.GAME;
+
+
+        //hide box
+        document.getElementById("waitingToStart").style.display= "none";
+        
+
+        createCanvasListeners();
+
+    }
+
+
+
+    function createCanvasListeners(){
+        
+        //canvas listeners for drawing
+        canvas.addEventListener('mousedown', onMouseDown, false);
+        canvas.addEventListener('mouseup', onMouseUp, false);
+        canvas.addEventListener('mouseout', onMouseUp, false);
+        canvas.addEventListener('mousemove', throttle(onMouseMove, 10), false);
+        canvas.addEventListener('touchstart', onMouseDown, false);
+        canvas.addEventListener('touchend', onMouseUp, false);
+        canvas.addEventListener('touchcancel', onMouseUp, false);
+        canvas.addEventListener('touchmove', throttle(onMouseMove, 10), false);
+
+        // listen for drawing event from socket server
+        socket.on('drawing', onDrawingEvent);
+
     }
 
 
 
 
 
-
-
-
-
-    //canvas listeners for drawing
-    canvas.addEventListener('mousedown', onMouseDown, false);
-    canvas.addEventListener('mouseup', onMouseUp, false);
-    canvas.addEventListener('mouseout', onMouseUp, false);
-    canvas.addEventListener('mousemove', throttle(onMouseMove, 10), false);
-    canvas.addEventListener('touchstart', onMouseDown, false);
-    canvas.addEventListener('touchend', onMouseUp, false);
-    canvas.addEventListener('touchcancel', onMouseUp, false);
-    canvas.addEventListener('touchmove', throttle(onMouseMove, 10), false);
-
-
-    // listen for drawing event from socket server
-    socket.on('drawing', onDrawingEvent);
 
     //resize canvas
     window.addEventListener('resize', onResize, false);
@@ -95,12 +182,12 @@
     function onMouseUp(e) {
         if (!drawing) { return; }
         drawing = false;
-        drawLine(current.x, current.y, e.clientX || e.touches[0].clientX, e.clientY || e.touches[0].clientY, current.color, true);
+        drawLine(current.x, current.y, e.clientX || e.touches[0].clientX, e.clientY || e.touches[0].clientY, myColour, true);
     }
 
     function onMouseMove(e) {
         if (!drawing) { return; }
-        drawLine(current.x, current.y, e.clientX || e.touches[0].clientX, e.clientY || e.touches[0].clientY, current.color, true);
+        drawLine(current.x, current.y, e.clientX || e.touches[0].clientX, e.clientY || e.touches[0].clientY, myColour, true);
         current.x = e.clientX || e.touches[0].clientX;
         current.y = e.clientY || e.touches[0].clientY;
     }
