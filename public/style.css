@@ -121,12 +121,13 @@
   #gameui{
     width: 50%;
     margin: auto;
-
     display:none;
+   
   }
 
   #gameui ul{
     list-style: none;
+ 
   }
 
   .colourBox{
