@@ -76,7 +76,7 @@
                 }
             }
 
-            if(data.players.length >= 3){
+            if(data.players.length >= 1){
                 document.getElementById("pwaiting").style.display = "none";
                 document.getElementById("btnStart").style.display = "block";
                 document.getElementById("btnStart").disabled = false;

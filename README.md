@@ -26,9 +26,9 @@ i.e. you need to make sure all the real artists know that you know what is being
 
 TODO
 
-- [ ] each player is a different colour and lines are thicker
-- [ ] start screen where players enter name and click when ready
-- [ ] create room when everyone is ready
+- [x] each player is a different colour and lines are thicker
+- [x] start screen where players enter name and click when ready
+- [x] create room when everyone is ready
 - [ ] random word list + acceptable answers
 - [ ] put names next to colours
 - [ ] timer and rounds

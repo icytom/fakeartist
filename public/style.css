@@ -116,3 +116,21 @@
     padding: 10px;
     border: solid 1px white;
   }
+
+
+  #gameui{
+    width: 50%;
+    margin: auto;
+
+    display:none;
+  }
+
+  #gameui ul{
+    list-style: none;
+  }
+
+  .colourBox{
+    width: 4em;
+    height: 4em;
+    background-color: red;
+  }
