@@ -91,7 +91,7 @@
   text-align: center;
   }
 
-  #waitingToStart{
+  #waitingToStartModal, #createRoomModal, #joinRoomModal{
     display: none;
   }
 

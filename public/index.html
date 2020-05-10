@@ -2,22 +2,52 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Socket.IO whiteboard</title>
+  <title>Fake Artist</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   
-  <div id="startgame" class="modal">
-    <form id="joinForm" action="">
+  <!--Introduction-->
+  <div id="introductionModal" class="modal">
+    <form id="roomForm" action="">
       <label><span>Fake</span> Artist</label>
-      <input id="n" autocomplete="off" placeholder="Enter your name" />
-      <button id="btnJoinRoom">I'm ready to start</button>
+      <h2>How to Play</h2>
+      <p>
+        All players work together to draw the same thing, but one player does not know what the others are drawing. That player is the fake artist and must pretend. The other players need to work out who the fake artist is.
+      </p>
+      <button id="btnJoinRoom">Join Room</button>
+      <button id="btnCreateRoom">Create new room</button>
+    </form>
+  </div>
+  
+  <!--Create a new room-->
+  <div id="createRoomModal" class="modal">
+    <form id="createRoomForm" action="">
+      <label><span>Fake</span> Artist</label>
+      <label>Your Name:</label>
+      <input name="playerName" required autocomplete="off" placeholder="Enter your name" />
+      <label>Room Name:</label>
+      <input name="roomName" required autocomplete="off" placeholder="Enter Room name" />
+      <button>Create new room</button>
     </form>
   </div>
 
-  <div id="waitingToStart" class="modal">
+  <!--Join an existing room-->
+  <div id="joinRoomModal" class="modal">
+    <form id="joinRoomForm" action="">
+      <label><span>Fake</span> Artist</label>
+      <label>Your Name:</label>
+      <input name="playerName" required autocomplete="off" placeholder="Enter your name" />
+      <label>Room Name:</label>
+      <input name="roomName" required autocomplete="off" placeholder="Enter Room name" />
+      <button>Join room</button>
+    </form>
+  </div>
+
+  <div id="waitingToStartModal" class="modal">
     <form id="playForm" action="">
       <label><span>Fake</span> Artist</label>
+      <p>Room Name : <span id="roomNameDisplay"></span></p>
       <p>Artists in the studio:</p>
       <ul id="playerList">
       </ul>

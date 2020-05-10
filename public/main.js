@@ -20,46 +20,116 @@
 
     let current = {};
 
-    //find ready to play button and listen for click
-    let joinForm = document.getElementById('joinForm');
-    joinForm.addEventListener('submit', playerReady);
+    //---------------------introduction modal----------------------
+     //find ready to play button and listen for click
+    document.getElementById("btnJoinRoom").addEventListener("click", joinRoomClicked);
+    document.getElementById("btnCreateRoom").addEventListener("click", createRoomClicked);
 
-    function playerReady(e){
+    //Join room clicked
+    function joinRoomClicked(e){
         e.preventDefault(); //stop page refresh
-        //get value of input box
-        let playerName = document.getElementById("n").value;
+        document.getElementById("btnJoinRoom").removeEventListener("click", joinRoomClicked);
+        document.getElementById("btnCreateRoom").removeEventListener("click", createRoomClicked);
+        document.getElementById("introductionModal").style.display ="none";
+        document.getElementById("joinRoomModal").style.display = "block";
 
-        //do nothing if no name entered
-        if(playerName == ""){
+        let joinRoomForm = document.getElementById('joinRoomForm');
+        joinRoomForm.addEventListener('submit', joinRoom);
+    }
+
+    //create room clicked
+    function createRoomClicked(e){
+        e.preventDefault(); //stop page refresh
+        document.getElementById("btnJoinRoom").removeEventListener("click", joinRoomClicked);
+        document.getElementById("btnCreateRoom").removeEventListener("click", createRoomClicked);
+        document.getElementById("introductionModal").style.display ="none";
+        document.getElementById("createRoomModal").style.display = "block";
+        
+        let createRoomForm = document.getElementById('createRoomForm');
+        createRoomForm.addEventListener('submit', createRoom);
+        
+    }
+
+    //---------------------Create Room modal----------------------
+    
+    function createRoom(e){
+
+        e.preventDefault(); //stop page refresh
+        //get name
+        let playerName = e.srcElement["playerName"].value;
+        let roomName = e.srcElement["roomName"].value;
+        
+        if(playerName == "" || roomName == ""){
+            console.log("returning");
             return;
         }
-        
-        state = states.WAITING_FOR_PLAYER;
 
-        //add player to server
+        let createRoomForm = document.getElementById('createRoomForm');
+        createRoomForm.removeEventListener('submit', createRoom);
+
+        //Create new room here
+            socket = io({
+                query: {
+                  userName: playerName,
+                  roomName: roomName
+                }
+              });
+    
+            socket.on('roomClients', onPlayerRoomEvent);
+              
+            socket.on('startPainting', onStartPainting);
+        
+        //hide current modal
+
+        document.getElementById("createRoomModal").style.display = "none";
+        
+        //show next modal
+        document.getElementById("waitingToStartModal").style.display = "block";
+    
+    }
+
+    //-------------------Join existing room modal
+
+    function joinRoom(e){
+        e.preventDefault(); //stop page refresh
+        //get name
+        let playerName = e.srcElement["playerName"].value;
+        let roomName = e.srcElement["roomName"].value;
+        
+        if(playerName == "" || roomName == ""){
+            return;
+        }
+
+        let createRoomForm = document.getElementById('joinRoomForm');
+        createRoomForm.removeEventListener('submit', joinRoom);
+
+        //join existing room here room here
         socket = io({
             query: {
-              userName: playerName
+              userName: playerName,
+              roomName: roomName
             }
           });
 
-        //hide ready to play screen
-        document.getElementById("startgame").style.display = "none";
-        joinForm.removeEventListener('submit',playerReady);
-
-        //show waiting box
-        document.getElementById("waitingToStart").style.display = "block";
-
-        //listen for players enterning or leaving the room
         socket.on('roomClients', onPlayerRoomEvent);
           
         socket.on('startPainting', onStartPainting);
+        
+        //hide current modal
+        document.getElementById("joinRoomModal").style.display = "none";
+        
+        //show next modal
+        document.getElementById("waitingToStartModal").style.display = "block";
 
     }
 
-    
+
     function onPlayerRoomEvent(data){
         
+        //display room name
+        let roomSpan = document.getElementById("roomNameDisplay");
+        roomSpan.innerText = data.roomName;
+
         //add to list if just entered
         if(data.players){
             let list = document.getElementById("playerList");
@@ -93,10 +163,8 @@
                 let playForm = document.getElementById('playForm');
                 playForm.removeEventListener('submit', startGame);
             }
-
        
         }
-
     }
 
     function startGame(e){
@@ -111,16 +179,11 @@
 
         state = states.GAME;
 
-
         //hide box
         document.getElementById("waitingToStart").style.display= "none";
-        
 
         createCanvasListeners();
-
     }
-
-
 
     function createCanvasListeners(){
         
@@ -136,13 +199,7 @@
 
         // listen for drawing event from socket server
         socket.on('drawing', onDrawingEvent);
-
-    }
-
-
-
-
-
+    } 
 
     //resize canvas
     window.addEventListener('resize', onResize, false);

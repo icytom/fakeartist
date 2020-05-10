@@ -11,10 +11,12 @@ const colours = ["red","green", "blue", "black", "orange", "yellow"];
 
 function onConnection(socket) {
 
-    let roomName = 'room1';
-    socket.join(roomName);   //join new room
+    let roomName =  socket.playername = socket.handshake.query.roomName;
+    socket.join(roomName);  //join new room
 
+   
     socket.playername = socket.handshake.query.userName;    //add username to socket
+    console.log(socket.playername + " joined room " + roomName);
 
     emitRoomClients(roomName);   //send list of players in room back to all clients in the room
 
@@ -47,7 +49,7 @@ function emitRoomClients(room) {
                 );
             
         }
-        io.sockets.in(room).emit('roomClients', { "players": clientsInRoom });
+        io.sockets.in(room).emit('roomClients', { "players": clientsInRoom, "roomName": room});
     })
 }
 
