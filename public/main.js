@@ -180,7 +180,7 @@
         state = states.GAME;
 
         //hide box
-        document.getElementById("waitingToStart").style.display= "none";
+        document.getElementById("waitingToStartModal").style.display= "none";
 
         createCanvasListeners();
     }
