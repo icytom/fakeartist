@@ -20,6 +20,8 @@
 
     let current = {};
 
+    let playersInRoom;
+
     //---------------------introduction modal----------------------
      //find ready to play button and listen for click
     document.getElementById("btnJoinRoom").addEventListener("click", joinRoomClicked);
@@ -64,20 +66,23 @@
             return;
         }
 
+        socket = io();
+
+
+
         let createRoomForm = document.getElementById('createRoomForm');
         createRoomForm.removeEventListener('submit', createRoom);
 
         //Create new room here
-            socket = io({
-                query: {
-                  userName: playerName,
-                  roomName: roomName
-                }
-              });
+            
+        socket.emit('joinRoom', {
+            userName: playerName,
+            roomName: roomName
+          });
     
-            socket.on('roomClients', onPlayerRoomEvent);
+        socket.on('roomClients', onPlayerRoomEvent);
               
-            socket.on('startPainting', onStartPainting);
+        socket.on('startPainting', onStartPainting);
         
         //hide current modal
 
@@ -100,16 +105,21 @@
             return;
         }
 
+
+        socket = io();
+
         let createRoomForm = document.getElementById('joinRoomForm');
         createRoomForm.removeEventListener('submit', joinRoom);
 
         //join existing room here room here
-        socket = io({
-            query: {
-              userName: playerName,
-              roomName: roomName
-            }
+       
+
+        socket.emit('joinRoom', {
+            userName: playerName,
+            roomName: roomName
           });
+      
+
 
         socket.on('roomClients', onPlayerRoomEvent);
           
@@ -129,6 +139,8 @@
         //display room name
         let roomSpan = document.getElementById("roomNameDisplay");
         roomSpan.innerText = data.roomName;
+
+        playersInRoom = data.players;
 
         //add to list if just entered
         if(data.players){
@@ -170,7 +182,6 @@
     function startGame(e){
         e.preventDefault(); //stop page refresh
 
-
         socket.emit('startPainting');
     }
 
@@ -182,6 +193,41 @@
         //hide box
         document.getElementById("waitingToStartModal").style.display= "none";
 
+        //show 
+        document.getElementById("gameui").style.display= "block";
+
+        //remove all elements
+        let ul = document.getElementById("inGamePlayerList");
+
+        ul.innerHTML = "";
+
+        for(let i in playersInRoom){
+
+           let li = document.createElement("li");
+            let htmlString = "<div class='colourBox'></div><span class='playerName'>" + playersInRoom[i].clientName + "</span>"
+           li.innerHTML = htmlString;
+           let div = li.getElementsByTagName("div");
+           
+           div[0].style.backgroundColor = playersInRoom[i].colour;
+
+            let ul = document.getElementById("inGamePlayerList");
+
+            ul.appendChild(li);
+
+        }
+
+        //
+
+        if(!data.imFake){
+            let w = document.getElementById("wordToDraw");
+            w.innerText = data.word;
+        }else{
+            let w = document.getElementById("wordToDrawP");
+            w.innerText = "You are the Fake artist!";
+        }
+        
+
+        
         createCanvasListeners();
     }
 
@@ -213,7 +259,7 @@
         context.strokeStyle = color;
         context.lineCap = "round";
         context.lineJoin = "round";
-        context.lineWidth = 10;
+        context.lineWidth = 5;
         context.stroke();
         context.closePath();
 

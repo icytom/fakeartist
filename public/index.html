@@ -13,7 +13,8 @@
       <label><span>Fake</span> Artist</label>
       <h2>How to Play</h2>
       <p>
-        All players work together to draw the same thing, but one player does not know what the others are drawing. That player is the fake artist and must pretend. The other players need to work out who the fake artist is.
+        All players work together to draw the same thing, but one player is a fake and does not know what the others are drawing.</p>
+        <p>Who is the Fake artist?
       </p>
       <button id="btnJoinRoom">Join Room</button>
       <button id="btnCreateRoom">Create new room</button>
@@ -58,11 +59,11 @@
 
   <div id="gameui">
 
-    <ul>
-      <li><div class="colourBox"></div><span class="playerName">name</span></li>
+    <ul id="inGamePlayerList">
+      
     </ul>
     
-    <span>Donkey</span>
+    <p id="wordToDrawP">Draw a <span id="wordToDraw">Donkey</span></p>
 
   </div>
   <canvas class="whiteboard" ></canvas>

@@ -4,6 +4,8 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const port = process.env.PORT || 3000;
 
+const words = ["Dog", "Cat", "Dragon", "Monkey", "Hedghog", "Rabbit"];
+
 app.use(express.static(__dirname + '/public'));
 
 
@@ -11,26 +13,57 @@ const colours = ["red","green", "blue", "black", "orange", "yellow"];
 
 function onConnection(socket) {
 
-    let roomName =  socket.playername = socket.handshake.query.roomName;
-    socket.join(roomName);  //join new room
+    let gameRoom;
 
-   
-    socket.playername = socket.handshake.query.userName;    //add username to socket
-    console.log(socket.playername + " joined room " + roomName);
+    socket.on('joinRoom', function (data) {
 
-    emitRoomClients(roomName);   //send list of players in room back to all clients in the room
-
+        socket.playername = data.userName;   
+       
+        socket.join(data.roomName);  //join new room
+        
+        gameRoom = data.roomName;
+      
+        emitRoomClients(data.roomName);
+    });
+    
     socket.on('disconnect', function () {
-        emitRoomClients(roomName);
+        emitRoomClients(gameRoom);
     });
 
-    socket.on('drawing', (data) => io.sockets.in(roomName).emit('drawing', data));
+    socket.on('drawing', (data) => io.sockets.in(gameRoom).emit('drawing', data));
 
-    socket.on('startPainting', (data) =>  io.sockets.in(roomName).emit('startPainting'));
+    socket.on('startPainting', () => {
 
-    
+        console.log("start painting");
 
+        //choose word
+        let returnData = {};
+        returnData.word = words[(Math.floor(Math.random() * (words.length) ))];
 
+        io.in(gameRoom).clients((err , clients) => { 
+            
+            let fakeArtist = Math.floor(Math.random() *  clients.length);
+          
+            console.log("fakeArtist", fakeArtist);
+            console.log("clients", clients);
+            console.log("clients_length", clients.length);
+
+            for(i in clients){
+                if(i == fakeArtist){
+                    returnData.imFake = true;
+                }else{
+                  returnData.imFake = false;
+                }
+                
+                console.log("returnData",returnData);
+                io.to(clients[i]).emit('startPainting', returnData);
+              //  socket.broadcast.to().emit('startPainting', returnData); 
+            }
+            
+
+         })
+
+    })
 }
 
 function emitRoomClients(room) {
